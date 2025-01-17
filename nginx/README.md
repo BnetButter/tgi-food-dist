@@ -40,3 +40,21 @@ volumes:
 - <root>/selfsigned.key:/etc/ssl/private/selfsigned.key
 - <root>/nginx.conf:/etc/nginx/conf.d/default.conf
 ```
+
+# Sample Docker Compose
+
+```yaml
+
+  nginx:
+    image: nginx:latest
+    env_file:
+      - .env
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/selfsigned.crt:/etc/ssl/certs/selfsigned.crt
+      - ./nginx/selfsigned.key:/etc/ssl/private/selfsigned.key
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+
+```

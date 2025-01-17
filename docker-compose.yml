@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  server:
+    image: bnetbutter/poetry-base:latest
+    container_name: server
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    environment:
+      - USER_ID=1000
+      - GROUP_ID=1000
+    volumes:
+      - ./server/app:/home/user/app
+    working_dir: /home/user/app/fooddistserver
+    command: python3 manage.py runserver 0.0.0.0:8000
+
+  nginx:
+    image: nginx:latest
+    container_name: fooddist_proxy
+    env_file:
+      - .env
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/selfsigned.crt:/etc/ssl/certs/selfsigned.crt
+      - ./nginx/selfsigned.key:/etc/ssl/private/selfsigned.key
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+
+  test_login:
+    image: python:3.10
+    volumes:
+      - ./test_loginclient:/app
+    working_dir: /app
+    command: python3 -m http.server
+  
+
+
+volumes:
+  postgres_data:

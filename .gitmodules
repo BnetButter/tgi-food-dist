@@ -1,0 +1,3 @@
+[submodule "tgi-food-security-frontend"]
+	path = tgi-food-security-frontend
+	url = https://github.com/BnetButter/tgi-food-security-frontend

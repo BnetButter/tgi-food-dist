@@ -44,7 +44,19 @@ services:
     working_dir: /app
     command: python3 -m http.server
   
-
+  frontend-dev:
+    working_dir: /app
+    image: node
+    volumes:
+      - ./tgi-food-security-frontend:/app
+    env_file:
+      - .env
+    user: "${UID}:${GID}"
+    command: npm run dev
+    stdin_open: true      # Keep stdin open (interactive)
+    tty: true             # Allocate a pseudo-TTY
+    ports:
+    - 5173:5173
 
 volumes:
   postgres_data:

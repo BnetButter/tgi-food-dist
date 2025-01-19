@@ -5,6 +5,10 @@ import jwt  # PyJWT
 import os
 from accounts.models import User
 from django.utils.timezone import now
+import json
+import logging
+from django.db import IntegrityError
+logger = logging.getLogger(__name__)
 
 AUTH0_DOMAIN = os.environ["AUTH0_DOMAIN"]
 AUTH0_CLIENT_ID = os.environ["AUTH0_CLIENT_ID"]
@@ -20,9 +24,9 @@ def token_exchange(request):
         return JsonResponse({"error": "Only POST requests are allowed"}, status=405)
 
     # Parse the incoming request data
-    data = request.POST
+    data = json.loads(request.body)
     code = data.get("code")
-    redirect_uri = data.get("redirect_uri")
+    redirect_uri = data.get("redirect_uri");
 
     if not code or not redirect_uri:
         return JsonResponse({"error": "Missing 'code' or 'redirect_uri'"}, status=400)
@@ -54,14 +58,19 @@ def token_exchange(request):
 
         # Decode the ID token without validation (just to access claims)
         decoded_id_token = jwt.decode(id_token, options={"verify_signature": False})
-        
-        
-        user, _ = User.objects.get_or_create(
-            id=decoded_id_token["sub"],
-            first_name=decoded_id_token.get("given_name"),
-            last_name=decoded_id_token.get("family_name"),
-            email=decoded_id_token["email"],
-        )
+
+        logger.warn(json.dumps(decoded_id_token))
+        email = decoded_id_token["email"]
+       
+        try:
+            user, _ = User.objects.get_or_create(
+                id=decoded_id_token["sub"],
+                first_name=decoded_id_token.get("given_name"),
+                last_name=decoded_id_token.get("family_name"),
+                email=email,
+            )
+        except IntegrityError:
+            return JsonResponse({"error": f"User with email {email} already exists"})   
 
         user.last_login = now()
         user.save()

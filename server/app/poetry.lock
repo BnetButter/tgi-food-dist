@@ -154,6 +154,40 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-filter"
+version = "24.3"
+description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "django_filter-24.3-py3-none-any.whl", hash = "sha256:c4852822928ce17fb699bcfccd644b3574f1a2d80aeb2b4ff4f16b02dd49dc64"},
+    {file = "django_filter-24.3.tar.gz", hash = "sha256:d8ccaf6732afd21ca0542f6733b11591030fa98669f8d15599b358e24a2cd9c3"},
+]
+
+[package.dependencies]
+Django = ">=4.2"
+
+[[package]]
+name = "django-phonenumber-field"
+version = "8.0.0"
+description = "An international phone number field for django models."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "django_phonenumber_field-8.0.0-py3-none-any.whl", hash = "sha256:196c917b70c01a98e327f482eb8a4a4a55a29891db551f99078585397370b3ba"},
+    {file = "django_phonenumber_field-8.0.0.tar.gz", hash = "sha256:8a560fe1b01b94c9de8cde22bc373b695f023cc6df4baba00264cb079da9f631"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
+
+[package.extras]
+phonenumbers = ["phonenumbers (>=7.0.2)"]
+phonenumberslite = ["phonenumberslite (>=7.0.2)"]
+
+[[package]]
 name = "django-stubs"
 version = "5.1.1"
 description = "Mypy stubs for Django"
@@ -256,6 +290,18 @@ groups = ["main"]
 files = [
     {file = "packaging-24.2-py3-none-any.whl", hash = "sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759"},
     {file = "packaging-24.2.tar.gz", hash = "sha256:c228a6dc5e932d346bc5739379109d49e8853dd8223571c7c5b55260edc0b97f"},
+]
+
+[[package]]
+name = "phonenumbers"
+version = "8.13.53"
+description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "phonenumbers-8.13.53-py2.py3-none-any.whl", hash = "sha256:fa7b93e12b3ac9baa7b056061cfcbe4de406039f720bb539dc240bed9cc43da2"},
+    {file = "phonenumbers-8.13.53.tar.gz", hash = "sha256:b7308f21837defa567b4f961925b6c652dd5148f3e0fadbd158a10758cc63d91"},
 ]
 
 [[package]]
@@ -493,4 +539,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10"
-content-hash = "6b71b9ccfa708852ddf6b3a46af1d6614c19ffb14af315893f3b3323778c0e66"
+content-hash = "bee005248dd8856775fcc06c3bdc09782fb3c19003315182e56ab561d481d6a6"

@@ -14,6 +14,7 @@ AUTH0_DOMAIN = os.environ["AUTH0_DOMAIN"]
 AUTH0_CLIENT_ID = os.environ["AUTH0_CLIENT_ID"]
 AUTH0_CLIENT_SECRET = os.environ["AUTH0_CLIENT_SECRET"]
 JWT_SECRET = os.environ["JWT_SECRET"]
+    
 
 @csrf_exempt
 def token_exchange(request):
@@ -59,7 +60,6 @@ def token_exchange(request):
         # Decode the ID token without validation (just to access claims)
         decoded_id_token = jwt.decode(id_token, options={"verify_signature": False})
 
-        logger.warn(json.dumps(decoded_id_token))
         email = decoded_id_token["email"]
        
         try:
@@ -74,7 +74,8 @@ def token_exchange(request):
 
         user.last_login = now()
         user.save()
-    
+
+
         # Re-sign the ID token with your own secret key
         session_token = jwt.encode(
             decoded_id_token, 
@@ -82,12 +83,14 @@ def token_exchange(request):
             algorithm="HS256"
         )
 
+        logger.warning(session_token)
+
 
         response = JsonResponse({"token": session_token})
 
         # Set the session token in a secure cookie
         response.set_cookie(
-            "sessionid",
+            "accessToken",
             session_token,
             httponly=True,             # Prevents JavaScript access to the cookie
             secure=True,               # Ensures the cookie is only sent over HTTPS
@@ -102,3 +105,29 @@ def token_exchange(request):
         return JsonResponse({"error": "Invalid ID token.", "details": str(e)}, status=401)
     except Exception as e:
         return JsonResponse({"error": "An error occurred during token exchange.", "details": str(e)}, status=500)
+
+
+from rest_framework import viewsets
+from .models import Role, User
+from .serializers import UserSerializer, RoleSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for managing users.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = [ 'email' ]
+
+
+class RoleViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for managing roles.
+    """
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = [ 'user', 'role' ]

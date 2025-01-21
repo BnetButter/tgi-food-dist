@@ -22,6 +22,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=30, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    username = models.TextField(null=True, blank=True)
 
     objects = CustomUserManager()
 
@@ -30,3 +31,23 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.id
+
+
+class RoleEnum(models.TextChoices):
+    DISTRIBUTOR = "distributor", "Distributor"
+    COLLECTOR = "collector", "Collector"
+    DELIVERER = "deliverer", "Deliverer"
+
+
+class Role(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=50, choices=RoleEnum.choices)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'role'], name='unique_user_role')
+        ]
+
+    def __str__(self):
+        return f"{self.user.email} - {self.role}"
+

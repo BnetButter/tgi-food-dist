@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',  # Add DRF here
     'accounts',
-    'api'
+    'api',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -137,3 +139,55 @@ AUTH_USER_MODEL = "accounts.User"
 # Ensure cookies are transmitted only over HTTPS
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # Number of items per page
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'api.auth.CustomOAuthAuthentication',  # Replace with the actual path to your class
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Require authentication globally
+    ],
+}
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',  # Set to DEBUG for detailed information
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',  # Enable DEBUG level for the django logger
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'INFO',  # Enable DEBUG level for request logger
+            'propagate': False,
+        },
+    },
+}

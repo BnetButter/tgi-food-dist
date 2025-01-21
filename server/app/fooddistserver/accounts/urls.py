@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from .views import token_exchange
 
 urlpatterns = [
-    path('token/', views.token_exchange, name='token_exchange'),
+    path('token/', token_exchange, name='token_exchange'),
 ]

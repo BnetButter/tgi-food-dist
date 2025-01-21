@@ -60,10 +60,14 @@ class DistributionCenterViewSet(viewsets.ModelViewSet):
 from rest_framework.filters import SearchFilter
 from .models import InventoryItem
 from .serializers import InventoryItemSerializer
-
+from rest_framework.pagination import PageNumberPagination
 class InventoryItemViewSet(viewsets.ModelViewSet):
     queryset = InventoryItem.objects.all()
     serializer_class = InventoryItemSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['distribution_center']  # Explicit filtering by distribution_center
     search_fields = ['name']  # Search by name
+
+    class pagination_class(PageNumberPagination):
+        page_size = 10  # Default page size
+        page_size_query_param = 'page_size'  # Enables the `page_size` query parameter
